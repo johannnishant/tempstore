@@ -6,12 +6,17 @@
 
 	<?php 
 
+		// This is a PHP Script to delete files & relevant symlinks which are older
+		// than 3 days. 
+		// A Cron process implemented by crontab runs this script every 5 minutes
+		//Check Crontab by crontab -e
 
-		$user = 'tempstorage';
-		$password = 'mothership()';
-		$db = 'tempstorage';
-		$host = '127.0.0.1';
-		$port = 3306;
+		// Enter your own DB Details
+		$user =;
+		$password =;
+		$db =;
+		$host =;
+		$port =;
 
 
 		$link = mysqli_init();
@@ -27,7 +32,7 @@
 
 		$today=time();
 
-		$sql= "SELECT `fileno`,`filename` FROM `files` WHERE DATEDIFF(now(),`dateofaddition`) >= 7";
+		$sql= "SELECT `fileno`,`filename` FROM `files` WHERE DATEDIFF(now(),`dateofaddition`) >= 3";
 					
 
 		$result=mysqli_query($link,$sql) or die(mysqli_error($link));
@@ -38,9 +43,9 @@
 		{
 		       echo $row[1];
 
-		       $f1="../".$row[1];
-		       $f2="Storage/".$row[1];
-		       $f3=$row[0];
+		       $f1="../".$row[1]; // This is the Path for the Symlink
+		       $f2="Storage/".$row[1]; // This is Path for actual file
+		       $f3=$row[0]; // This if Fileno for deletion
 
 		       if(is_link($f1))
 		       	unlink($f1);
@@ -51,13 +56,10 @@
 					
 
 			$result1=mysqli_query($link,$sql) or die(mysqli_error($link));
-
-
-		  
+	  		// Usinge result1 as result is holding previous query
 		}
 
-
-		echo "The count is $count";
+		echo "The Number of Files which can be deleted is $count";
 
 		?>
 
